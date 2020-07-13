@@ -43,6 +43,15 @@ def get_country_by_region(region):
         return {}
 
 
+def get_statistics(df):
+    try:
+        return {'Total': [df.Time.sum()], 'Mean': [df.Time.mean()], 'Min': [df.Time.min()], 'Max': [df.Time.max()]}
+    except AttributeError as error:
+        print("Could not get statistics.", file=sys.stderr)
+        print(error, file=sys.stderr)
+        return {}
+
+
 def save_to_sqlite(df, name):
     try:
         con = sqlite3.connect('challenge.db')
@@ -57,10 +66,7 @@ def main():
     _regions = get_regions()
     _countries = [get_country_by_region(reg) for reg in _regions]
     c_df = pd.DataFrame(_countries)
-    s_df = pd.DataFrame({'Total': c_df.Time.sum(),
-                         'Mean': c_df.Time.mean(),
-                         'Min': c_df.Time.min(),
-                         'Max': c_df.Time.max()}, index=['Time'])
+    s_df = pd.DataFrame(get_statistics(c_df), index=['Time'])
     print(c_df)
     print(s_df)
     save_to_sqlite(c_df, 'Countries')
