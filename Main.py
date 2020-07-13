@@ -46,7 +46,7 @@ def get_country_by_region(region):
 def save_to_sqlite(df, name):
     try:
         con = sqlite3.connect('challenge.db')
-        df.to_sql(name=name, con=con)
+        df.to_sql(name=name, con=con, if_exists='replace')
         con.close()
     except ValueError as error:
         print("Could not store DataFrame.", file=sys.stderr)
